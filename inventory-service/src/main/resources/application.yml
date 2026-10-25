@@ -1,0 +1,31 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${INVENTORY_PORT:8084}
+spring:
+  application:
+    name: inventory-service
+  config:
+    import: optional:configserver:${CONFIG_URL:http://localhost:8888}
+  datasource:
+    url: ${INVENTORY_DB_URL:jdbc:h2:mem:inventory;DB_CLOSE_DELAY=-1}
+    username: sa
+    password: ${INVENTORY_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: ${SERVICE_HOST:127.0.0.1}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+app:
+  seed-data: ${SEED_DATA:true}

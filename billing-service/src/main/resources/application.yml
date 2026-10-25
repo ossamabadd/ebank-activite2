@@ -1,0 +1,40 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${BILLING_PORT:8085}
+spring:
+  application:
+    name: billing-service
+  config:
+    import: optional:configserver:${CONFIG_URL:http://localhost:8888}
+  datasource:
+    url: ${BILLING_DB_URL:jdbc:h2:mem:billing;DB_CLOSE_DELAY=-1}
+    username: sa
+    password: ${BILLING_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 1500
+            readTimeout: 2000
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: ${SERVICE_HOST:127.0.0.1}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+app:
+  seed-data: ${SEED_DATA:true}
+  customer-url: ${CUSTOMER_SERVICE_URL:}
+  inventory-url: ${INVENTORY_SERVICE_URL:}

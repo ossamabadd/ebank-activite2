@@ -1,0 +1,17 @@
+app:
+  routing-mode: static
+  urls:
+    customer: ${CUSTOMER_SERVICE_URL:http://localhost:8081}
+    inventory: ${INVENTORY_SERVICE_URL:http://localhost:8084}
+    billing: ${BILLING_SERVICE_URL:http://localhost:8085}
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: false
+eureka:
+  client:
+    enabled: false

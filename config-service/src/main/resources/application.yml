@@ -1,0 +1,25 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${CONFIG_PORT:8888}
+spring:
+  application:
+    name: config-service
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: classpath:/config-repo/
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    ip-address: ${SERVICE_HOST:127.0.0.1}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

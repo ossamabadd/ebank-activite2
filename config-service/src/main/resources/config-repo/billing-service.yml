@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 1500
+            readTimeout: 2000
+app:
+  invoice-currency: MAD

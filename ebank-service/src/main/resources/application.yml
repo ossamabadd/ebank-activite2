@@ -1,0 +1,60 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${BANK_PORT:8082}
+spring:
+  application:
+    name: ebank-service
+  config:
+    import: optional:configserver:${CONFIG_URL:http://localhost:8888}
+  datasource:
+    url: ${BANK_DB_URL:jdbc:h2:mem:bank;DB_CLOSE_DELAY=-1}
+    username: sa
+    password: ${BANK_DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+  cloud:
+    openfeign:
+      client:
+        config:
+          customer-service:
+            connectTimeout: 1500
+            readTimeout: 2000
+  ai:
+    mcp:
+      server:
+        name: ebank-service
+        version: 1.0.0
+        protocol: STREAMABLE
+        type: SYNC
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: ${SERVICE_HOST:127.0.0.1}
+resilience4j:
+  circuitbreaker:
+    instances:
+      customerLookup:
+        slidingWindowSize: 10
+        ignoreExceptions:
+          - feign.FeignException$NotFound
+        minimumNumberOfCalls: 3
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+  timelimiter:
+    instances:
+      customerLookup:
+        timeoutDuration: 3s
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+app:
+  customer-url: ${CUSTOMER_SERVICE_URL:}
+  seed-data: ${SEED_DATA:true}

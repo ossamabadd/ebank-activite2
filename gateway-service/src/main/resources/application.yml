@@ -1,0 +1,30 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${GATEWAY_PORT:8080}
+spring:
+  application:
+    name: gateway-service
+  config:
+    import: optional:configserver:${CONFIG_URL:http://localhost:8888}
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+              include-expression: "serviceId matches '(?i)(customer-service|inventory-service|billing-service)'"
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    ip-address: ${SERVICE_HOST:127.0.0.1}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

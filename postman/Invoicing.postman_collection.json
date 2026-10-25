@@ -1,0 +1,196 @@
+{
+  "info": {
+    "name": "Invoicing — Customer / Inventory / Billing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "productId",
+      "value": "1"
+    },
+    {
+      "key": "billId",
+      "value": "1"
+    },
+    {
+      "key": "dueDate",
+      "value": "2026-12-31"
+    }
+  ],
+  "item": [
+    {
+      "name": "Customers",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/customers",
+        "header": []
+      }
+    },
+    {
+      "name": "Create customer",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/customers",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Sarah Benali\",\n  \"email\": \"sarah@example.com\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Products",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/products",
+        "header": []
+      }
+    },
+    {
+      "name": "Create product",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/products",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sku\": \"SCREEN-01\",\n  \"name\": \"Ecran 27 pouces\",\n  \"unitPrice\": 2490,\n  \"quantity\": 20\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Product details",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/products/{{productId}}",
+        "header": []
+      }
+    },
+    {
+      "name": "Update product",
+      "request": {
+        "method": "PUT",
+        "url": "{{baseUrl}}/api/products/{{productId}}",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sku\": \"LAP-001\",\n  \"name\": \"MacBook Air M3\",\n  \"unitPrice\": 12990,\n  \"quantity\": 12\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Invoices",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/bills",
+        "header": []
+      }
+    },
+    {
+      "name": "Create invoice",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/bills",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "postman-{{$guid}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customerId\": 1,\n  \"dueDate\": \"{{dueDate}}\",\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 2\n    },\n    {\n      \"productId\": 2,\n      \"quantity\": 1\n    }\n  ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Invoice details",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/bills/{{billId}}",
+        "header": []
+      }
+    },
+    {
+      "name": "Mark paid",
+      "request": {
+        "method": "PATCH",
+        "url": "{{baseUrl}}/api/bills/{{billId}}/status",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"PAID\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "Dynamic inventory route",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/inventory-service/api/products",
+        "header": []
+      }
+    },
+    {
+      "name": "Dynamic billing route",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/billing-service/api/bills",
+        "header": []
+      }
+    }
+  ]
+}

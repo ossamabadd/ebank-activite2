@@ -1,0 +1,55 @@
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${CHATBOT_PORT:8083}
+spring:
+  application:
+    name: chatbot-service
+  config:
+    import: optional:configserver:${CONFIG_URL:http://localhost:8888}
+  ai:
+    retry:
+      max-attempts: 2
+      backoff:
+        initial-interval: 500ms
+        multiplier: 2
+        max-interval: 2s
+    ollama:
+      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+      init:
+        pull-model-strategy: never
+      chat:
+        options:
+          model: ${OLLAMA_MODEL:llama3.1:8b}
+          temperature: 0.2
+    mcp:
+      client:
+        enabled: ${MCP_ENABLED:true}
+        name: ebank-chatbot
+        type: SYNC
+        request-timeout: 15s
+        streamable-http:
+          connections:
+            customers:
+              url: ${CUSTOMER_MCP_URL:http://localhost:8081}
+            bank:
+              url: ${BANK_MCP_URL:http://localhost:8082}
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DISCOVERY_URL:http://localhost:8761/eureka/}
+  instance:
+    prefer-ip-address: true
+    ip-address: ${SERVICE_HOST:127.0.0.1}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+app:
+  telegram:
+    enabled: ${TELEGRAM_ENABLED:false}
+    token: ${TELEGRAM_BOT_TOKEN:}
+  discord:
+    enabled: ${DISCORD_ENABLED:false}
+    public-key: ${DISCORD_PUBLIC_KEY:}
+    application-id: ${DISCORD_APPLICATION_ID:}
